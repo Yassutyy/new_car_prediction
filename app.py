@@ -3,75 +3,81 @@ import pandas as pd
 import pickle
 import plotly.express as px
 
-# Load encoders and models
+# Load all models and encoders
 with open("brand_encoder.pkl", "rb") as f:
     brand_encoder = pickle.load(f)
 with open("fuel_encoder.pkl", "rb") as f:
     fuel_encoder = pickle.load(f)
+with open("scaler.pkl", "rb") as f:
+    scaler = pickle.load(f)
 with open("model_lr.pkl", "rb") as f:
     model_lr = pickle.load(f)
 with open("model_rf.pkl", "rb") as f:
     model_rf = pickle.load(f)
 
-# Load data
+# Load dataset
 df = pd.read_csv("car_data_set.csv")
 
-# App layout
+# Streamlit config
 st.set_page_config(layout="wide")
-
 st.sidebar.title("🧭 Navigation")
-section = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations", "🧠 Predictor"])
+option = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations", "🧠 Predictor"])
 
-# Main Title
-st.markdown("<h1 style='text-align:center;'>🚗 Car Price Prediction Tool</h1>", unsafe_allow_html=True)
+# Title
+st.markdown("<h1 style='text-align: center;'>🚗 Car Price Prediction Tool</h1>", unsafe_allow_html=True)
 
-# Sections
-if section == "🏠 Home":
+# Home
+if option == "🏠 Home":
     st.markdown("""
-    ### 🔧 About This App
-    This tool lets you:
-    - View the training dataset
-    - Explore key data visualizations
-    - Predict car prices using:
-        - Linear Regression
-        - Random Forest
-
-    Use the sidebar to begin ➡️
+        ### 🧾 What this app does:
+        - Shows dataset used for training the car price predictor
+        - Visualizes car price trends
+        - Predicts price using:
+            - Linear Regression
+            - Random Forest
+        ---
+        👉 Use the sidebar to explore!
     """)
 
-elif section == "📁 Dataset":
-    st.subheader("🔍 Dataset Used for Training")
+# Dataset
+elif option == "📁 Dataset":
+    st.subheader("📁 Training Dataset")
     st.dataframe(df)
 
-elif section == "📊 Visualizations":
-    st.subheader("📊 Visual Data Insights")
-
-    fig1 = px.histogram(df, x='Selling_Price', nbins=50, title="Selling Price Distribution")
+# Visualizations
+elif option == "📊 Visualizations":
+    st.subheader("📊 Visualizations")
+    fig1 = px.histogram(df, x="Selling_Price", nbins=50, title="Selling Price Distribution", marginal="box")
     st.plotly_chart(fig1, use_container_width=True)
 
-    fig2 = px.box(df, x='Fuel', y='Selling_Price', title="Selling Price by Fuel Type")
+    fig2 = px.box(df, x="Fuel", y="Selling_Price", title="Selling Price by Fuel Type")
     st.plotly_chart(fig2, use_container_width=True)
 
-elif section == "🧠 Predictor":
-    st.subheader("⚙️ Select Model")
-    model_option = st.radio("Choose a Model", ["Linear Regression", "Random Forest"])
+# Predictor
+elif option == "🧠 Predictor":
+    st.subheader("⚙️ Choose Model")
+    model_choice = st.radio("Select Model", ["Linear Regression", "Random Forest"])
 
-    st.markdown("### 🔢 Enter Car Details")
-    brand = st.selectbox("Brand", df['Brand'].unique())
-    year = st.slider("Manufacturing Year", 1995, 2025, 2015)
-    km_driven = st.number_input("Kilometers Driven", 0, 500000, 30000)
-    fuel = st.selectbox("Fuel Type", df['Fuel'].unique())
+    st.markdown("### 📥 Input Car Details")
+    brand = st.selectbox("Brand", df["Brand"].unique())
+    year = st.slider("Year of Manufacture", 1995, 2025, 2015)
+    km_driven = st.number_input("KM Driven", 0, 500000, 30000)
+    fuel = st.selectbox("Fuel Type", df["Fuel"].unique())
 
     if st.button("🚀 Predict"):
-        brand_encoded = brand_encoder.transform([brand])[0]
-        fuel_encoded = fuel_encoder.transform([fuel])[0]
-        car_age = 2025 - year
+        try:
+            brand_encoded = brand_encoder.transform([brand])[0]
+            fuel_encoded = fuel_encoder.transform([fuel])[0]
+            car_age = 2025 - year
 
-        input_data = [[brand_encoded, car_age, km_driven, fuel_encoded]]
+            input_data = [[brand_encoded, car_age, km_driven, fuel_encoded]]
+            input_scaled = scaler.transform(input_data)
 
-        if model_option == "Linear Regression":
-            prediction = model_lr.predict(input_data)[0]
-            st.success(f"💸 Predicted Price (Linear Regression): ₹ {max(0, int(prediction)):,}")
-        else:
-            prediction = model_rf.predict(input_data)[0]
-            st.success(f"💸 Predicted Price (Random Forest): ₹ {max(0, int(prediction)):,}")
+            if model_choice == "Linear Regression":
+                pred = model_lr.predict(input_scaled)[0]
+                st.success(f"💰 Predicted Price (LR): ₹ {int(pred):,}")
+            else:
+                pred = model_rf.predict(input_scaled)[0]
+                st.success(f"🌲 Predicted Price (Random Forest): ₹ {int(pred):,}")
+        except Exception as e:
+            st.error("⚠️ Prediction failed. Check your inputs or model files.")
