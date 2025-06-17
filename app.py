@@ -21,7 +21,7 @@ df = pd.read_csv("car_data_set.csv")
 # Streamlit config
 st.set_page_config(layout="wide")
 st.sidebar.title("🧭 Navigation")
-option = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations", "🧠 Predictor"])
+option = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations", ,"📄 Model Evaluation ","🧠 Predictor"])
 
 # Title
 st.markdown("<h1 style='text-align: center;'>🚗 Car Price Prediction Tool</h1>", unsafe_allow_html=True)
