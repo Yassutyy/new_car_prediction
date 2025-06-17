@@ -21,7 +21,7 @@ df = pd.read_csv("car_data_set.csv")
 # Streamlit config
 st.set_page_config(layout="wide")
 st.sidebar.title("🧭 Navigation")
-option = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations", "📄 Model Evaluation ","🧠 Predictor"])
+option = st.sidebar.radio("Go to", ["🏠 Home", "📁 Dataset", "📊 Visualizations","🧠 Predictor"])
 
 # Title
 st.markdown("<h1 style='text-align: center;'>🚗 Car Price Prediction Tool</h1>", unsafe_allow_html=True)
@@ -54,15 +54,11 @@ elif option == "📊 Visualizations":
     fig2 = px.box(df, x="Fuel", y="Selling_Price", title="Selling Price by Fuel Type")
     st.plotly_chart(fig2, use_container_width=True)
 
-elif option == " 📄 Model Evaluation ":
-    st.subheader("R2 Scores and Mean Squared error ")
-    st.subheader("Linear Regression :  R2 score = 0.31030 and Mean Squared Error : 234920020059.23")
-    st.subheader("Random Forest  :  R2 score = 0.648 and Mean Squared Error : 107115499435.73")
 
 # Predictor
 elif option == "🧠 Predictor":
     st.subheader("⚙️ Choose Model")
-    model_choice = st.radio("Select Model", ["Linear Regression : R2 Score () ", "Random Forest : R2 Score () "])
+    model_choice = st.radio("Select Model", ["Linear Regression : R2 Score ( 0.310 ) ", "Random Forest : R2 Score ( 0.648 ) "])
 
     st.markdown("### 📥 Input Car Details")
     brand = st.selectbox("Brand", df["Brand"].unique())
