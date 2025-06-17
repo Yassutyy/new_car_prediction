@@ -54,7 +54,7 @@ elif option == "📊 Visualizations":
     fig2 = px.box(df, x="Fuel", y="Selling_Price", title="Selling Price by Fuel Type")
     st.plotly_chart(fig2, use_container_width=True)
 
-elif option == " Model Evaluation ":
+elif option == " 📄 Model Evaluation ":
     st.subheader("R2 Scores and Mean Squared error ")
     st.subheader("Linear Regression :  R2 score = 0.31030 and Mean Squared Error : 234920020059.23")
      st.subheader("Random Forest  :  R2 score = 0.648 and Mean Squared Error : 107115499435.73")
