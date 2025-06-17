@@ -33,8 +33,8 @@ if option == "🏠 Home":
         - Shows dataset used for training the car price predictor
         - Visualizes car price trends
         - Predicts price using:
-            - Linear Regression
-            - Random Forest 
+            - Linear Regression (R² Score: 0.31)
+            - Random Forest (R² Score: 0.65)
         ---
         👉 Use the sidebar to explore!
     """)
@@ -54,11 +54,13 @@ elif option == "📊 Visualizations":
     fig2 = px.box(df, x="Fuel", y="Selling_Price", title="Selling Price by Fuel Type")
     st.plotly_chart(fig2, use_container_width=True)
 
-
 # Predictor
 elif option == "🧠 Predictor":
     st.subheader("⚙️ Choose Model")
-    model_choice = st.radio("Select Model", ["Linear Regression R2 Score 0.31", "Random Forest R2 Score 0.65"])
+    model_choice = st.radio("Select Model", [
+        "Linear Regression (R² Score: 0.31)",
+        "Random Forest (R² Score: 0.65)"
+    ])
 
     st.markdown("### 📥 Input Car Details")
     brand = st.selectbox("Brand", df["Brand"].unique())
@@ -75,11 +77,11 @@ elif option == "🧠 Predictor":
             input_data = [[brand_encoded, car_age, km_driven, fuel_encoded]]
             input_scaled = scaler.transform(input_data)
 
-            if model_choice == "Linear Regression":
+            if model_choice.startswith("Linear Regression"):
                 pred = model_lr.predict(input_scaled)[0]
-                st.success(f"💰 Predicted Price : ₹ {int(pred):,}")
+                st.success(f"💰 Predicted Price (Linear Regression): ₹ {int(pred):,}")
             else:
                 pred = model_rf.predict(input_scaled)[0]
-                st.success(f"🌲 Predicted Price : ₹ {int(pred):,}")
+                st.success(f"🌲 Predicted Price (Random Forest): ₹ {int(pred):,}")
         except Exception as e:
-            st.error("⚠️ Prediction failed. Check your inputs")
+            st.error(f"⚠️ Prediction failed. Error: {e}")
