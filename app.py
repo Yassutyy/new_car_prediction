@@ -18,6 +18,12 @@ with open("model_rf.pkl", "rb") as f:
 # Load dataset
 df = pd.read_csv("car_data_set.csv")
 
+# R² scores
+r2_scores = {
+    "Linear Regression": 0.31,
+    "Random Forest": 0.65
+}
+
 # Streamlit config
 st.set_page_config(layout="wide")
 st.sidebar.title("🧭 Navigation")
@@ -57,10 +63,7 @@ elif option == "📊 Visualizations":
 # Predictor
 elif option == "🧠 Predictor":
     st.subheader("⚙️ Choose Model")
-    model_choice = st.radio("Select Model", [
-        "Linear Regression (R² Score: 0.31)",
-        "Random Forest (R² Score: 0.65)"
-    ])
+    model_choice = st.radio("Select Model", ["Linear Regression", "Random Forest"])
 
     st.markdown("### 📥 Input Car Details")
     brand = st.selectbox("Brand", df["Brand"].unique())
@@ -77,11 +80,12 @@ elif option == "🧠 Predictor":
             input_data = [[brand_encoded, car_age, km_driven, fuel_encoded]]
             input_scaled = scaler.transform(input_data)
 
-            if model_choice == "Linear Regression (R² Score: 0.31)":
+            if model_choice == "Linear Regression":
                 pred = model_lr.predict(input_scaled)[0]
-                st.success(f"💰 Predicted Price (Linear Regression): ₹ {int(pred):,}")
-            elif model_choice == "Random Forest (R² Score: 0.65)":
+            else:
                 pred = model_rf.predict(input_scaled)[0]
-                st.success(f"🌲 Predicted Price (Random Forest): ₹ {int(pred):,}")
+
+            st.success(f"💰 Predicted Price using **{model_choice}**: ₹ {int(pred):,}")
+            st.info(f"📈 R² Score for {model_choice}: {r2_scores[model_choice]}")
         except Exception as e:
             st.error(f"⚠️ Prediction failed. Error: {e}")
