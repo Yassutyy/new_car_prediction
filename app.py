@@ -33,8 +33,8 @@ if option == "🏠 Home":
         - Shows dataset used for training the car price predictor
         - Visualizes car price trends
         - Predicts price using:
-            - Linear Regression
-            - Random Forest
+            - Linear Regression R2 Score : 0.310
+            - Random Forest R2 Score : 0.648
         ---
         👉 Use the sidebar to explore!
     """)
