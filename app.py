@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 import plotly.express as px
 
-# Load all models and encoders
+# Load models and encoders
 with open("brand_encoder.pkl", "rb") as f:
     brand_encoder = pickle.load(f)
 with open("fuel_encoder.pkl", "rb") as f:
@@ -77,10 +77,10 @@ elif option == "🧠 Predictor":
             input_data = [[brand_encoded, car_age, km_driven, fuel_encoded]]
             input_scaled = scaler.transform(input_data)
 
-            if model_choice.startswith("Linear Regression"):
+            if model_choice == "Linear Regression (R² Score: 0.31)":
                 pred = model_lr.predict(input_scaled)[0]
                 st.success(f"💰 Predicted Price (Linear Regression): ₹ {int(pred):,}")
-            else:
+            elif model_choice == "Random Forest (R² Score: 0.65)":
                 pred = model_rf.predict(input_scaled)[0]
                 st.success(f"🌲 Predicted Price (Random Forest): ₹ {int(pred):,}")
         except Exception as e:
