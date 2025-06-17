@@ -38,6 +38,7 @@ if option == "🏠 Home":
         ---
         👉 Use the sidebar to explore!
     """)
+    st.caption("Developed by B.Yaswanth, A.Dinesh, SK.Baji")
 
 # Dataset
 elif option == "📁 Dataset":
